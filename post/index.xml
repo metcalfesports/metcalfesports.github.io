@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Sam Metcalfe&#39;s Analytics Blog</title>
+    <link>http://metcalfesports.github.io/post/</link>
+    <description>Recent content in Posts on Sam Metcalfe&#39;s Analytics Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 15 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://metcalfesports.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introductory Post</title>
+      <link>http://metcalfesports.github.io/post/2021/03/15/introductory-post/</link>
+      <pubDate>Mon, 15 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://metcalfesports.github.io/post/2021/03/15/introductory-post/</guid>
+      <description>This will be the first viewable post of (hopefully) many on this website. The initial purpose of this blog is to store projects for SPMC 350, Sports Analysis and Visualiztion. My hope is that after a while, this domain will serve as a place for me to store projects and writing, whether for a class or not, to be viewed publically and serve as a portfolio.</description>
+    </item>
+    
+  </channel>
+</rss>
