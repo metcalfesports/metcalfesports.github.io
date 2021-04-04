@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>The Search For the Greatest QB Season Ever - and it&#39;s Unexpected Challenger  - Sam Metcalfe&#39;s Analytics Blog</title>
+    <title>The Search For the Greatest QB Season Ever - and its Unexpected Challenger  - Sam Metcalfe&#39;s Analytics Blog</title>
     <meta property="og:title" content="The Search For the Greatest QB Season Ever - Sam Metcalfe&#39;s Analytics Blog">
     
     <meta name="twitter:card" content="summary">
@@ -15,8 +15,8 @@
 
     
       
-      <meta property="description" content="The Buccaneers winning their championship in 2020 all but put away the debate over the greatest quarterback of all time. That has been settled. I found myself asking what the greatest season by an NFL &amp;hellip;">
-      <meta property="og:description" content="The Buccaneers winning their championship in 2020 all but put away the debate over the greatest quarterback of all time. That has been settled. I found myself asking what the greatest season by an NFL &amp;hellip;">
+      <meta property="description" content="The Buccaneers winning their championship in 2020 all but put away the debate over who the greatest quarterback of all time is. That’s been settled. I found myself wondering what quarterback season &amp;hellip;">
+      <meta property="og:description" content="The Buccaneers winning their championship in 2020 all but put away the debate over who the greatest quarterback of all time is. That’s been settled. I found myself wondering what quarterback season &amp;hellip;">
       
     
 
@@ -77,7 +77,7 @@
       <header class="title">
       
 <h1>The Search For the Greatest QB Season Ever</h1>
-<h1><span class="subtitle">and it&#39;s Unexpected Challenger</span></h1>
+<h1><span class="subtitle">and its Unexpected Challenger</span></h1>
 <h3>Sam Metcalfe
   /  2021-04-01</h3>
 <hr>
@@ -90,10 +90,10 @@
 
 
 
-<p>The Buccaneers winning their championship in 2020 all but put away the debate over the greatest quarterback of all time. That has been settled. I found myself asking what the greatest season by an NFL quarterback was.</p>
+<p>The Buccaneers winning their championship in 2020 all but put away the debate over who the greatest quarterback of all time is. That’s been settled. I found myself wondering what quarterback season was the greatest ever.</p>
 <p>I assembled my list of what I believe to be the top 10 seasons in NFL history. This list was made up of Hall of Famers, Champions, and MVPs. Legends of the sport.</p>
 <p>I compiled the season stats and dug in.</p>
-<p>What did I find? An unlikely hero in Nick Foles’ 2013 campaign with the Philadelphia Eagles.
+<p>What did I find? An unlikely hero in Nick Foles and his 2013 campaign with the Philadelphia Eagles.
 Sound ridiculous? It should, but let’s get into some numbers.</p>
 <p>The data I’ll be working with comes from <a href="https://www.pro-football-reference.com/">Pro-Football Reference’s</a> NFL database.</p>
 <p>The first question that had to be asked was: what seasons are worthy to be included in this search? I compiled a selection from the top yard, touchdown, and QB rating seasons from a variety of QBs.</p>
@@ -115,14 +115,15 @@ Sound ridiculous? It should, but let’s get into some numbers.</p>
 ## #   `Int%` &lt;dbl&gt;, `1D` &lt;dbl&gt;, Lng &lt;dbl&gt;, `Y/A` &lt;dbl&gt;, `AY/A` &lt;dbl&gt;,
 ## #   `Y/C` &lt;dbl&gt;, `Y/G` &lt;dbl&gt;, Rate &lt;dbl&gt;, QBR &lt;chr&gt;, Sk &lt;dbl&gt;, Yds_1 &lt;dbl&gt;,
 ## #   `NY/A` &lt;dbl&gt;, `ANY/A` &lt;dbl&gt;, `Sk%` &lt;dbl&gt;, `4QC` &lt;dbl&gt;, GWD &lt;dbl&gt;, AV &lt;dbl&gt;</code></pre>
-<p>The roster is assembled, now let’s see what they got. Some quarterbacks on my list (Nick Foles, Aaron Rodgers) played less games, but all met my minimum requirements (at least 15 passes per team game played) to be considered for this study.
-Now the obvious stats to look at to grade a QBs season are passing yards and touchdowns, so that will be the first thing we look at.</p>
-<p>With each QBs yards and touchdowns per game values, I made bar charts for comparison between the passers.</p>
+<p>The roster is assembled, now let’s start comparing the seasons. Some quarterbacks on my list (Nick Foles, Aaron Rodgers) played less games, but all met my minimum requirements (at least 240 pass attempts) to be considered for this study.
+Now the obvious stats to use to grade a QBs season are passing yards and touchdowns, and that will be the first thing we look at.</p>
+<p>With each QB’s yards and touchdowns per game values, I made bar charts for an easier comparison between the passers.</p>
 <p><img src="http://metcalfesports.github.io/post/2021/04/01/the-search-for-the-greatest-qb-season-ever/index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
-No surprises here, Peyton Manning’s 2013 season in Denver dominates the volume charts, throwing for the most yards per game, and racking up almost 4 touchdowns per outing. The NFL average is roughly 234 yards with 1.45 touchdowns per game, so while Manning may have shown out on this chart, all these quarterbacks blew those averages out of the water, certainly living up to the prestige of the best seasons of all time.</p>
-<p>And don’t count out Nick Foles quite yet, volume is not where he separates himself.</p>
-<p>The next metric I looked into was winning percentage. Quarterback is the most important position on the field, and therefore receive the most credit/blame for a game’s outcome.</p>
-<p>To find this, because of the way the data is set up, we have to separate the wins and losses. Doing this is fairly simple, and we can separate the outcomes of games as well as calculate winning percentages using the following code chunks.</p>
+No surprises here, Peyton Manning’s 2013 season in Denver dominates the volume charts, throwing for the most yards per game, and racking up almost 4 touchdowns per outing.</p>
+<p>The NFL average is roughly 234 yards with 1.45 touchdowns per game, so while Manning may have shown out on this chart, all these quarterbacks blew those averages out of the water, certainly living up to the prestige of the best seasons of all time.</p>
+<p>(And don’t count out Nick Foles quite yet, volume is not where his season became extraordinary.)</p>
+<p>The next metric wanted to look into was winning percentage. Quarterback is the most important position on the field, and therefore generally receive the most credit/blame for a game’s outcome.</p>
+<p>To find their winning percentage, because of the way the data is set up, we have to separate the wins and losses. Doing this is fairly simple, and we can separate the outcomes of games as well as calculate winning percentages using the following code chunks.</p>
 <pre class="r"><code>CleanQB &lt;- QBdata %&gt;% separate(QBrec, into=c(&quot;Wins&quot;, &quot;Losses&quot;, &quot;Ties&quot;), sep=&quot;-&quot;) %&gt;% 
     mutate(Wins = as.numeric(Wins), Losses = as.numeric(Losses))</code></pre>
 <pre class="r"><code>WinPercent &lt;- CleanQB %&gt;% 
@@ -131,9 +132,10 @@ No surprises here, Peyton Manning’s 2013 season in Denver dominates the volume
   )</code></pre>
 <p>With this data set created, the winning percentages of each quarterback can be displayed in a lollipop chart.
 <img src="http://metcalfesports.github.io/post/2021/04/01/the-search-for-the-greatest-qb-season-ever/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
-Tom Brady’s perfect 16-0 in 2007 certainly tops this list, but all of these quarterbacks led their teams to the playoffs, most with a first round bye. All but 1 of our seasons managed to see their teams win at least 75% of their games.</p>
-<p>When it comes to winning percentage, Brady takes the cake, but it’s narrow when you consider the level of success all of these QBs were able to achieve.</p>
-<p>Now is when things start to come together for Nick Foles. We’re going to start taking a look at what is arguably the most important trait in a quarterback: Ball Security</p>
+Tom Brady’s perfect 16-0 in 2007 certainly tops this list, but all of these quarterbacks led their teams to the playoffs, most with a first round bye. All but 1 of our seasons managed to see their teams win at least 75% of their games, going at least 12-4.</p>
+<p>When it comes to winning percentage, Brady takes the cake, but it does not put his season out of reach of the others when you consider the level of success all of these QBs were able to achieve.</p>
+<p>Now’s when things begin to come into focus for Nick Foles’ case. We’re going to start taking a look at is arguably the most important trait in a quarterback: ball security. A quarterback can rack up the yards and touchdowns, but if he doesn’t protect the football while doing so, it isn’t seen as a good season.
+(see 2019 Jameis Winston)</p>
 <p>Using a scatterplot, we can factor in passer rating and interception percentage in order to find out which QBs on our roster were the smartest with the ball.</p>
 <p><img src="http://metcalfesports.github.io/post/2021/04/01/the-search-for-the-greatest-qb-season-ever/index_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 The seasons inside of the red circle are the best when it comes to ball security, having passer ratings over 115, and interception percentage below 1.49%.
@@ -143,10 +145,10 @@ We see that Brady, Rodgers (x2), and Foles all fall within the circle. In 2013, 
 <p><img src="http://metcalfesports.github.io/post/2021/04/01/the-search-for-the-greatest-qb-season-ever/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>This chart allows us to see which passers moved the ball most effectively, while also factoring in the importance of protecting the football. The bubble size will also allow us to determine how many points the QBs were able to put on the board in each game.</p>
 <p>This is where Nick Foles separates himself.</p>
-<p>He averages the 3rd highest yards gained per pass attempt, at 9.1, only 1/10 of a yard behind the top 2. But what’s most impressive, is that he did so while throwing 13.5 touchdowns for every interception he threw. This is far and away the most touchdowns thrown per interception among our legendary seasons, and it was done while also moving the ball at the 3rd highest clip.</p>
+<p>He averages the 3rd highest yards gained per pass attempt, at 9.1, only 1/10 of a yard behind the top 2. But what’s most impressive is the fact he did so while throwing 13.5 touchdowns for every interception he threw. This is far and away the most touchdowns thrown per interception among our legendary seasons, and it was done while also moving the ball at the 3rd highest clip.</p>
 <p>All things considered, it’s hard to go wrong naming any number of these seasons the greatest ever. Peyton Manning put up numbers that had never been seen before, Tom Brady won every game he played in, and Aaron Rodgers was, well, Aaron Rodgers.
 But Nick Foles may have a case that’s just as compelling, or more.</p>
-<p>He may not be bound for Canton, but looking beyond the numbers he posted, and examining the way in which he did it, none of the other quarterbacks in this legendary set compare. In 2013, Nick Foles just may have had the most impressive season of all time.</p>
+<p>He may not be bound for Canton, but looking beyond the numbers he posted, and examining the way in which he did it, none of the other quarterbacks in this legendary set compare. The sheer effectiveness of his season is not rivaled from these seasons. In 2013, Nick Foles just may have had the most impressive season of all time.</p>
 
 
   <footer>
