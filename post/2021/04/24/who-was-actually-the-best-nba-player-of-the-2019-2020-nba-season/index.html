@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Who was ACTUALLY the best NBA player of the 2019-2020 NBA Season? - The Creation of Superstar Value.  - Sam Metcalfe&#39;s Analytics Blog</title>
+    <meta property="og:title" content="Who was ACTUALLY the best NBA player of the 2019-2020 NBA Season? - Sam Metcalfe&#39;s Analytics Blog">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="The 2019-2020 NBA season was a unique one, with the whole season being put on hold, and then resuming months later in the bubble. This didn’t mean it was any less interesting. The league was flush &amp;hellip;">
+      <meta property="og:description" content="The 2019-2020 NBA season was a unique one, with the whole season being put on hold, and then resuming months later in the bubble. This didn’t mean it was any less interesting. The league was flush &amp;hellip;">
+      
+    
+
+    
+    
+    <meta name="twitter:image" content="http://metcalfesports.github.io/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/index_files/figure-html/unnamed-chunk-5-1.png">
+    
+    
+
+    
+
+    
+    
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+
+  </head>
+
+  
+  <body class="post">
+    <header class="masthead">
+      <h1><a href="/">Sam Metcalfe&#39;s Analytics Blog</a></h1>
+
+<p class="tagline">A blog where I will store my projects and papers to build a living portfolio.</p>
+
+      <nav class="menu">
+  <input id="menu-check" type="checkbox" hidden/>
+  <label id="menu-label" for="menu-check" class="unselectable" hidden>
+    <span class="icon close-icon">✕</span>
+    <span class="icon open-icon">☰</span>
+    <span class="text">Menu</span>
+  </label>
+  <ul>
+  
+  
+  <li><a href="http://metcalfesports.github.io/">Home</a></li>
+  
+  <li><a href="/about/">About</a></li>
+  
+  <li><a href="/projects/">Projects</a></li>
+  
+  <li><a href="/contact/">Contact Me</a></li>
+  
+  
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>Who was ACTUALLY the best NBA player of the 2019-2020 NBA Season?</h1>
+<h1><span class="subtitle">The Creation of Superstar Value.</span></h1>
+<h3>Sam Metcalfe
+  /  2021-04-24</h3>
+<hr>
+
+
+      </header>
+
+
+
+
+
+
+<p>The 2019-2020 NBA season was a unique one, with the whole season being put on hold, and then resuming months later in the bubble. This didn’t mean it was any less interesting. The league was flush with stars, both legends like LeBron James, and the emergance of a new generation of superstars, like Luka Dončić.</p>
+<p>Giannis Antetokoumnpo, the Greek Freak was crowned as the league’s Most Valuable Player, but was he REALLY the top player in the league last season? I took it upon myself to find out, and found myself creating my own measure: Superstar Value.</p>
+<p>After attaching all the packages I would need in order to have R help me determine the top players in the NBA, I uploaded my data. I’m using season stats from [Basketball Reference] (<a href="https://www.basketball-reference.com/" class="uri">https://www.basketball-reference.com/</a>)</p>
+<p>I’m starting this investigation by looking at the advanced metrics from the seaso, so I needed to load those up.</p>
+<pre class="r"><code>rawadvanced &lt;- read_csv(&quot;nbaadvancedplayers1920.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   Player = col_character(),
+##   Pos = col_character(),
+##   Tm = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<p>I needed to trim down the data by eliminating those tht hadn’t played significant time, I set this gate at 25 games.</p>
+<pre class="r"><code>advanced &lt;- rawadvanced %&gt;% filter(G&gt;25)</code></pre>
+<p>I first want to look at overall player value, so I am going to look at the data in terms of Value Over Replacement Player (VORP) and Box Plus/Minus (BPM)</p>
+<pre class="r"><code>mostvalue &lt;- advanced %&gt;% filter(VORP &gt; 5, BPM &gt; 4.3)</code></pre>
+<p>Putting this data into a bubble chart, you see a pocket of players who have signifcantly seperated themselves from the pack. These are our MVP candidates, and our superstars.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(
+    data=advanced, 
+    aes(x=VORP, y=BPM, size=WS),
+    alpha = .45
+    ) +
+    scale_size() +
+    geom_text_repel(
+    data=) +
+  scale_color_manual() +
+  theme_minimal()  +
+  labs(title = &quot;An Early Group of Stars Emerge&quot;, subtitle=&quot;A predictable group seprates from the pack&quot;, y=&quot;Box Plus/Minus&quot;, x=&quot;Value over Replacement Player&quot;, caption=&quot;Source: Basketball Reference | By Sam Metcalfe&quot;)+
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size=9.5), 
+    plot.caption = element_text(size=8)
+    )+
+  geom_encircle(data=mostvalue, aes(x=VORP, y=BPM), s_shape=.6, expand=.05, colour=&quot;red&quot;) +
+  geom_text(aes(x=6.4, y=10.4, label=&quot;Players who had the most value added to their teams&quot;),
+            size=3.2, color=&quot;red&quot;, nudge_x = -4)</code></pre>
+<p><img src="http://metcalfesports.github.io/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>set.seed(1234)</code></pre>
+<p>This group contains James Harden, Giannis, LeBron, Dame, Joker, AD, Luka, and Kawhi. These players provided the most extra value when compared to an average player, and their added overall point value to their team when on the floor. All signs point towards our top player being one of these elite eight.</p>
+<p>I’m going to turn a players total value into a single value, to work with later when calculating their Superstar Value. This weighs VORP as slightly higher, as it is the strongest indication of their value.</p>
+<pre class="r"><code>valuescore &lt;- advanced %&gt;% 
+  mutate(
+    VORPzscore = as.numeric(scale(VORP, center = TRUE, scale = TRUE))*1.3,
+    BPMzscore = as.numeric(scale(BPM, center = TRUE, scale = TRUE)),
+    WSzscore = as.numeric(scale(WS, center = TRUE, scale = TRUE)),
+    ValueZscore = VORPzscore + BPMzscore + WSzscore
+  )  </code></pre>
+<pre class="r"><code>valuescore %&gt;% 
+  summarise(
+    Player,
+    ValueZscore
+  ) %&gt;% 
+  arrange(desc(ValueZscore))</code></pre>
+<pre><code>## # A tibble: 420 x 2
+##    Player                ValueZscore
+##    &lt;chr&gt;                       &lt;dbl&gt;
+##  1 James Harden                15.8 
+##  2 Giannis Antetokounmpo       14.8 
+##  3 Damian Lillard              12.8 
+##  4 LeBron James                12.5 
+##  5 Anthony Davis               12.3 
+##  6 Nikola Jokić                11.7 
+##  7 Luka Dončić                 11.3 
+##  8 Kawhi Leonard               11.1 
+##  9 Jimmy Butler                 8.40
+## 10 Rudy Gobert                  8.04
+## # … with 410 more rows</code></pre>
+<p>Here we can see our leaders in Value Score, with James Harden taking the #1 spot, a place above the league’s “Most Valuable”.</p>
+<p>Now to move on to the next compenent, efficiency.</p>
+<pre class="r"><code>goodPT &lt;- advanced %&gt;% filter(G&gt;25)</code></pre>
+<p>I once again filtered to have only players who played a lot.</p>
+<p>I used Player Efficiency Rating and True Shooting Percentage to make a scatterplot, to get an overall look at how the league looks in terms of efficiency.</p>
+<pre class="r"><code>ggplot() + geom_point(data=goodPT, aes(x=`TS%`, y=PER))  + geom_point(data=bestPER, aes(x=`TS%`, y=PER), color=&quot;green&quot;)  + geom_point(data=bestTS, aes(x=`TS%`, y=PER), color=&quot;blue&quot;) +
+   theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,
+    panel.grid.major = element_blank()
+    ) + 
+   labs(title=&quot;The Most Efficient Players in the NBA are...&quot;, subtitle=&quot;Big men reign supreme in TS%, but our stars take PER&quot;, y=&quot;Player Efficiency Rating&quot;, x=&quot;True Shooting %&quot;, caption=&quot;Source: Basketball Reference | By Sam Metcalfe&quot;) +
+  geom_text(aes(x=.487, y=28, label=&quot;Players in green dominated all around in PER&quot;),
+            size=3.2, color=&quot;red&quot;) +
+  geom_text(aes(x=.67, y=8, label=&quot;       Players in in blue led
+                the league in True Shooting&quot;),
+            size=3.2, color=&quot;red&quot;)</code></pre>
+<p><img src="http://metcalfesports.github.io/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+The green dots represent Giannis, Anthony Davis, Luka, LeBron, Kawhi, and Damian Lillard. These players added the most positive impact to their team on a per minute basis.
+The Blue dots are an interesting thing to look at, the players with the highest True Shooting must be some of the premier players in the league, yes?</p>
+<p>well… not exactly. The blue dots represent Tyson Chandler, Damian Jones, Nerlans Noel, Mitchell Robinson, and Robert Williams. Solid role players, but not stars. True shooting seems to skew heavily towards big men, who take most of their shots close to the basket, and especially those big men who don’t shoot a lot of free throws.</p>
+<p>Now to make our Efficiency Value, using True Shooting, PER, REB% and AST%. Rebound and Assist percentage are the percetnage of rebounds or assists available to a player, that they execute on. For example, if a player has 5 rebounds come into their proximity during a game, and they grab 2 of them, they have a REB% of 40% (in real game situations these percentages are much lower.)</p>
+<pre class="r"><code>efficiencyScore &lt;- goodPT %&gt;%
+  mutate(
+    TSzscore = as.numeric(scale(`TS%`, center = TRUE, scale = TRUE)),
+    PERzscore = as.numeric(scale(PER, center = TRUE, scale = TRUE)) *1.2,
+    REBzscore = as.numeric(scale(`TRB%`, center = TRUE, scale = TRUE)) *.8,
+    ASTzscore = as.numeric(scale(`AST%`, center = TRUE, scale = TRUE)),
+    EfficiencyZscore = TSzscore + PERzscore + REBzscore + ASTzscore
+  ) </code></pre>
+<pre class="r"><code>efficiencyScore %&gt;% 
+  summarise(
+    Player,
+    EfficiencyZscore
+  ) %&gt;% 
+  arrange(desc(EfficiencyZscore))</code></pre>
+<pre><code>## # A tibble: 420 x 2
+##    Player                EfficiencyZscore
+##    &lt;chr&gt;                            &lt;dbl&gt;
+##  1 Giannis Antetokounmpo             9.95
+##  2 Luka Dončić                       8.38
+##  3 LeBron James                      7.70
+##  4 James Harden                      7.45
+##  5 Nikola Jokić                      7.27
+##  6 Karl-Anthony Towns                6.87
+##  7 Robert Williams                   6.24
+##  8 Trae Young                        6.18
+##  9 Damian Lillard                    6.15
+## 10 Joel Embiid                       5.94
+## # … with 410 more rows</code></pre>
+<p>When looking at the players who led in our Efficiency Rating, the MVP takes the top spot, by a considerable margian. This makes a lot of sense based off of the play style that Antetokounmpo plays. A surprising addition to the top ten in efficiency was Robert Williams, a center with the Boston Celtics. This too, is explained by play style, he spends most of his time offensively under the basket, and has an elite dunk rate.</p>
+<p>We have on more aspect to calculate before moving on to Superstar Value.This is to examine the players actual stats, the impact that is measured in the box score. For this, I’m going to use per game data, also from Basketball Reference.</p>
+<pre class="r"><code>perG &lt;- read_csv(&quot;pergamestatsnba.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   Player = col_character(),
+##   Pos = col_character(),
+##   Tm = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>realperG &lt;- perG %&gt;% filter(G&gt;25)</code></pre>
+<p>I have once again trimmed down the players to those that had playered in more than 25 games.</p>
+<p>To get the most basic sense of who leads these stats, I looked at the top 5 players in the three biggest stat catagories, Points, Rebounds, and Assists.</p>
+<pre class="r"><code>topPTs &lt;- realperG %&gt;% top_n(5, wt=PTS)</code></pre>
+<pre class="r"><code>topREBs &lt;- realperG %&gt;% top_n(5, wt=TRB)</code></pre>
+<pre class="r"><code>topASTs &lt;- realperG %&gt;% top_n(5, wt=AST)</code></pre>
+<p>I displayed these players in bar charts, and combined them into one graphic using cowplot.</p>
+<pre class="r"><code>bar1 &lt;- ggplot() + geom_bar(data=topPTs, aes(x=reorder(Player, -PTS), weight=PTS)) + coord_flip() +
+theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,
+    panel.grid.major = element_blank()
+    ) +
+   labs(title=&quot;Stat Sheet Stuffers&quot;,y=&quot;Points per Game&quot;, x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bar2 &lt;- ggplot() + geom_bar(data=topREBs, aes(x=reorder(Player, -TRB), weight=TRB)) + coord_flip() +
+  theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,
+    panel.grid.major = element_blank()
+    ) +
+   labs(y=&quot;Rebounds per Game&quot;, x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bar3 &lt;- ggplot() + geom_bar(data=topASTs, aes(x=reorder(Player, -AST), weight=AST)) + coord_flip()  +
+  theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,
+    panel.grid.major = element_blank()
+    ) +
+   labs(y=&quot;Assists per Game&quot;, x=&quot;&quot;, caption=&quot;Source: Basketball Reference | By Sam Metcalfe&quot;)</code></pre>
+<pre class="r"><code>plot_grid(bar1, bar2, bar3, ncol = 1)</code></pre>
+<p><img src="http://metcalfesports.github.io/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/index_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+Harden, Andre Drummond, and LeBron James lead in the major stat categories respectively, with Giannis, Damian Lillard, and Trae Young appearing multiple times on this graphic.</p>
+<p>I calculated their overall stat scores by combining the major 3 categories, and adding a value for blocks and steals. I then took a negative value away for their average turnovers per game.</p>
+<pre class="r"><code>StatScore &lt;- realperG %&gt;%
+  mutate(
+    PTzscore = as.numeric(scale(PTS, center = TRUE, scale = TRUE))*1.2,
+    TRBzscore = as.numeric(scale(TRB, center = TRUE, scale = TRUE))*.7,
+    ASTSzscore = as.numeric(scale(AST, center = TRUE, scale = TRUE)),
+    STLzscore = as.numeric(scale(STL, center = TRUE, scale = TRUE)),
+    BLKzscore = as.numeric(scale(BLK, center = TRUE, scale = TRUE)),
+    TOzscore = as.numeric(scale(TOV, center = TRUE, scale = TRUE)) * -1,
+    StatZscore = PTzscore + TRBzscore + ASTSzscore + STLzscore+BLKzscore+TOzscore
+  ) </code></pre>
+<pre class="r"><code>StatScore %&gt;% 
+  summarise(
+    Player,
+    StatZscore
+  ) %&gt;% 
+  arrange(desc(StatZscore))</code></pre>
+<pre><code>## # A tibble: 420 x 2
+##    Player                StatZscore
+##    &lt;chr&gt;                      &lt;dbl&gt;
+##  1 Anthony Davis              10.0 
+##  2 James Harden                8.21
+##  3 Andre Drummond              7.85
+##  4 Hassan Whiteside            7.44
+##  5 Giannis Antetokounmpo       7.38
+##  6 Kawhi Leonard               7.16
+##  7 Jonathan Isaac              7.13
+##  8 Jimmy Butler                6.73
+##  9 Ben Simmons                 6.66
+## 10 LeBron James                6.51
+## # … with 410 more rows</code></pre>
+<p>Anthony Davis ends up leading the pack in the overall state score by almost 2 whole points. Examining the leaderboards in this value, it is a value that definitely seems to favor big men, with only one guard appearing on the top 10 (James Harden). This is likely because of the tendency for big men to average more blocks and steals, as well as rebounds in a given game.</p>
+<p>I then needed to combine my three datasets I made, for Value, Efficient, and Stats into one data set that I can use to calculate each players Superstar Value</p>
+<pre class="r"><code>combined &lt;- cbind(valuescore, efficiencyScore, StatScore)</code></pre>
+<p>I then needed to clean the data so I didn’t run into errors with duplicate columns.</p>
+<pre class="r"><code>cleancombined &lt;- combined[!duplicated(as.list(combined))]</code></pre>
+<p>I then was able to use my scores I calculated in each of the three categories in order to find Superstar Value.</p>
+<pre class="r"><code>StarScore &lt;- cleancombined %&gt;% 
+  mutate(
+    SuperstarValue = StatZscore + ValueZscore + EfficiencyZscore
+  )</code></pre>
+<p>Then comes the moment of truth, let’s examine the top 5 players in Superstar Value</p>
+<pre class="r"><code>StarScore %&gt;% 
+  summarise(
+    Player,
+    SuperstarValue
+  ) %&gt;% 
+arrange(desc(SuperstarValue))</code></pre>
+<pre><code>##                       Player SuperstarValue
+## 1      Giannis Antetokounmpo   32.117533822
+## 2              Anthony Davis   27.622052910
+## 3                Luka Dončić   24.844835977
+## 4               James Harden   22.681373672
+## 5               Jimmy Butler   19.839883178
+## 6         Karl-Anthony Towns   19.804543734
+## 7               Nikola Jokić   17.927233907
+## 8                Ben Simmons   17.499392178
+## 9                Bam Adebayo   17.242281706
+## 10              LeBron James   17.009213468
+## 11                Chris Paul   16.675571651
+## 12            Damian Lillard   15.807654295
+## 13            Nikola Vučević   15.661679138
+## 14          Hassan Whiteside   15.342995721
+## 15          Domantas Sabonis   14.874627596
+## 16            Andre Drummond   14.658552518
+## 17         Mitchell Robinson   14.529885875
+## 18             Kawhi Leonard   14.499351547
+## 19              Jayson Tatum   14.005954257
+## 20              John Collins   13.919032861
+## 21            Brandon Ingram   13.254303506
+## 22              Bradley Beal   12.886602014
+## 23             Jarrett Allen   12.817213052
+## 24         Jonas Valančiūnas   12.548850758
+## 25                Trae Young   12.532448495
+## 26              Clint Capela   12.223341157
+## 27             DeMar DeRozan   12.080149976
+## 28              Steven Adams   11.678325104
+## 29   Shai Gilgeous-Alexander   11.582482679
+## 30              Devin Booker   11.142384264
+## 31              Kemba Walker   11.132332813
+## 32             Derrick White   11.102365565
+## 33             Fred VanVleet   11.063216019
+## 34               Rudy Gobert   10.605717792
+## 35                Kevin Love   10.237944906
+## 36          Montrezl Harrell    9.481240417
+## 37             Pascal Siakam    9.459440047
+## 38               Joel Embiid    9.420205455
+## 39         LaMarcus Aldridge    9.403771167
+## 40            Christian Wood    9.232985216
+## 41              Daniel Theis    9.036067705
+## 42            Richaun Holmes    8.974229184
+## 43               Ricky Rubio    8.965719681
+## 44          Tim Hardaway Jr.    8.882998609
+## 45            Brandon Clarke    8.688631949
+## 46             Thomas Bryant    8.507974970
+## 47            DeAndre Jordan    8.491928518
+## 48                  Alex Len    8.489374224
+## 49             Deandre Ayton    8.328338945
+## 50             Mason Plumlee    7.787650546
+## 51             Dwight Howard    7.658989755
+## 52             Evan Fournier    7.529773552
+## 53              Eric Bledsoe    7.474824947
+## 54         Spencer Dinwiddie    7.392122722
+## 55          D&#39;Angelo Russell    7.177093696
+## 56           Nemanja Bjelica    7.081773595
+## 57              Nerlens Noel    6.971235561
+## 58              Derrick Rose    6.934749772
+## 59          D&#39;Angelo Russell    6.852439626
+## 60           Malcolm Brogdon    6.844786039
+## 61          Boban Marjanović    6.700220932
+## 62                Joe Ingles    6.649421899
+## 63            Gordon Hayward    6.624770344
+## 64               Enes Kanter    6.622918260
+## 65               Paul George    6.420329457
+## 66        Kristaps Porziņģis    6.326633120
+## 67         Russell Westbrook    6.325990056
+## 68                Al Horford    6.113410378
+## 69           Marquese Chriss    6.090036056
+## 70               Will Barton    6.084857109
+## 71          Danilo Gallinari    6.054052349
+## 72              Marcus Smart    6.044516142
+## 73              Jrue Holiday    6.009474783
+## 74           Khris Middleton    5.854774789
+## 75              Jaxson Hayes    5.824839430
+## 76                Kyle Lowry    5.822841015
+## 77               T.J. Warren    5.758475845
+## 78              Caris LeVert    5.664345332
+## 79                OG Anunoby    5.474762642
+## 80              Bobby Portis    5.451312405
+## 81                Lonzo Ball    5.340801572
+## 82              Jaylen Brown    5.304053271
+## 83              Myles Turner    5.240261245
+## 84             Dwight Powell    5.120651236
+## 85           Larry Nance Jr.    5.097443987
+## 86              Delon Wright    4.991049164
+## 87          Robert Covington    4.983572349
+## 88                 Ja Morant    4.911352733
+## 89               Ivica Zubac    4.627660823
+## 90           Dejounte Murray    4.539864600
+## 91       Willie Cauley-Stein    4.437350707
+## 92               George Hill    4.388807364
+## 93   Rondae Hollis-Jefferson    4.383295691
+## 94                Joe Harris    4.345099641
+## 95               Harry Giles    4.333049573
+## 96              Tony Bradley    4.240452732
+## 97              Jakob Poeltl    4.140902580
+## 98          Patrick Beverley    4.125925654
+## 99             Mikal Bridges    4.052064168
+## 100          Robert Williams    4.041497822
+## 101      Willie Cauley-Stein    4.013831096
+## 102         Donovan Mitchell    3.996086291
+## 103            Chris Boucher    3.959043392
+## 104             Gorgui Dieng    3.840882145
+## 105            Julius Randle    3.796908528
+## 106            Norman Powell    3.685551789
+## 107             Gorgui Dieng    3.638294664
+## 108               Alec Burks    3.523438600
+## 109                 Rudy Gay    3.505020764
+## 110            Dāvis Bertāns    3.458608446
+## 111        Patrick Patterson    3.309033389
+## 112            Jabari Parker    3.297661773
+## 113         Robert Covington    3.251145674
+## 114           Andrew Wiggins    3.213560350
+## 115         Donte DiVincenzo    3.204704037
+## 116             De&#39;Aaron Fox    3.173763431
+## 117          P.J. Washington    3.131990998
+## 118            Tobias Harris    3.084837833
+## 119       Michael Porter Jr.    3.068083077
+## 120             Goran Dragić    3.042083159
+## 121         Tristan Thompson    2.928593849
+## 122              Cody Zeller    2.869927043
+## 123               Tyus Jones    2.848681536
+## 124               Alec Burks    2.827644058
+## 125       Shaquille Harrison    2.823471136
+## 126             Damian Jones    2.780679519
+## 127              Danny Green    2.762914260
+## 128           Brad Wanamaker    2.712411320
+## 129           Andre Drummond    2.634144436
+## 130            Aaron Holiday    2.615340279
+## 131             JaVale McGee    2.577767211
+## 132             Kelly Olynyk    2.540006503
+## 133        Bogdan Bogdanović    2.524971155
+## 134          Dennis Schröder    2.470753021
+## 135             Shake Milton    2.383842881
+## 136              Jeff Teague    2.358283970
+## 137             Lou Williams    2.334094935
+## 138           Derrick Favors    2.325639042
+## 139             Terry Rozier    2.314634666
+## 140              CJ McCollum    2.270266829
+## 141              Zach LaVine    2.245936524
+## 142              John Henson    2.205887822
+## 143              Jae Crowder    2.162691187
+## 144        Derrick Jones Jr.    2.149092570
+## 145              Buddy Hield    2.147254719
+## 146          Duncan Robinson    2.100025973
+## 147                 Alex Len    2.005113478
+## 148          Skal Labissière    1.990738441
+## 149           Ersan İlyasova    1.985196903
+## 150                 Mo Bamba    1.905843661
+## 151       Wendell Carter Jr.    1.838571766
+## 152          Jordan Clarkson    1.759796837
+## 153           Thaddeus Young    1.737982313
+## 154           Doug McDermott    1.610065352
+## 155          Kelly Oubre Jr.    1.557155161
+## 156           Daniel Gafford    1.536740342
+## 157         Tomáš Satoranský    1.487425853
+## 158             Justin James    1.474116788
+## 159               Seth Curry    1.468442085
+## 160        Willy Hernangómez    1.449004422
+## 161           Meyers Leonard    1.447823770
+## 162            Marcus Morris    1.354032745
+## 163        De&#39;Anthony Melton    1.323536336
+## 164               Marc Gasol    1.276939256
+## 165          Jordan Clarkson    1.268145323
+## 166             Jerami Grant    1.260479648
+## 167           T.J. McConnell    1.142208528
+## 168          Emmanuel Mudiay    1.140978367
+## 169              Serge Ibaka    1.114592566
+## 170         Maurice Harkless    1.080053167
+## 171              J.J. Redick    0.939600513
+## 172              Dario Šarić    0.885861044
+## 173             Aaron Gordon    0.828005547
+## 174              Patty Mills    0.767538284
+## 175            Georges Niang    0.725407069
+## 176              Mike Conley    0.631963172
+## 177           Justin Holiday    0.631436560
+## 178                Ish Smith    0.584038238
+## 179         Bojan Bogdanović    0.572629013
+## 180             Luke Kennard    0.554423201
+## 181            Elfrid Payton    0.504846379
+## 182  Michael Carter-Williams    0.495172049
+## 183             Kyle O&#39;Quinn    0.440824681
+## 184            Kyle Anderson    0.426137181
+## 185             Paul Millsap    0.422834535
+## 186           Shabazz Napier    0.357586619
+## 187          Cameron Johnson    0.319064737
+## 188           Troy Brown Jr.    0.299485763
+## 189               Trey Lyles    0.278940946
+## 190              Jeff Teague    0.237647890
+## 191             Jamal Murray    0.176623092
+## 192          Devonte&#39; Graham    0.149949559
+## 193           Jonathan Isaac    0.009441872
+## 194              Brook Lopez   -0.005530979
+## 195              Bruce Brown   -0.014677352
+## 196        Jordan McLaughlin   -0.063941645
+## 197              Maxi Kleber   -0.213132851
+## 198            Royce O&#39;Neale   -0.240786488
+## 199          Harrison Barnes   -0.265585594
+## 200            Terrence Ross   -0.272496350
+## 201             Trevor Ariza   -0.322486669
+## 202               Cedi Osman   -0.325291428
+## 203            Jabari Parker   -0.406203607
+## 204            Collin Sexton   -0.518379432
+## 205          Wayne Ellington   -0.614135411
+## 206            Marcus Morris   -0.645846498
+## 207              Aron Baynes   -0.722598069
+## 208            Terence Davis   -0.722847167
+## 209           Frank Kaminsky   -0.728672071
+## 210            Jahlil Okafor   -0.808030993
+## 211               Taj Gibson   -0.870103261
+## 212                Josh Hart   -0.893173326
+## 213      Dorian Finney-Smith   -0.938277131
+## 214          Jordan Clarkson   -0.945342363
+## 215             Jared Dudley   -0.991257729
+## 216             Danuel House   -1.051562108
+## 217           Draymond Green   -1.054027851
+## 218            Nassir Little   -1.080668102
+## 219          Pat Connaughton   -1.123514378
+## 220              Abdel Nader   -1.151630883
+## 221          Bismack Biyombo   -1.190187616
+## 222       Glenn Robinson III   -1.191755390
+## 223             Ben McLemore   -1.209296120
+## 224            D.J. Augustin   -1.233350016
+## 225          Brandon Goodwin   -1.234488228
+## 226       Glenn Robinson III   -1.252969423
+## 227          Marvin Williams   -1.306286147
+## 228            Moritz Wagner   -1.328083232
+## 229              Jae Crowder   -1.353367088
+## 230            Tyler Johnson   -1.396214817
+## 231              Chris Silva   -1.439970162
+## 232              John Henson   -1.455457425
+## 233            Jalen Brunson   -1.547570194
+## 234        Jaren Jackson Jr.   -1.597316123
+## 235             Jordan McRae   -1.636676195
+## 236              P.J. Tucker   -1.649988091
+## 237             Nicolò Melli   -1.655978954
+## 238          Lauri Markkanen   -1.845448568
+## 239            Cheick Diallo   -1.924749950
+## 240               Dante Exum   -1.974769226
+## 241          Josh Richardson   -1.980400239
+## 242            James Johnson   -2.071520097
+## 243              Rajon Rondo   -2.100409840
+## 244              Noah Vonleh   -2.134433953
+## 245             Monte Morris   -2.144288566
+## 246            Patrick McCaw   -2.171421967
+## 247         Matisse Thybulle   -2.213438178
+## 248              Noah Vonleh   -2.230829812
+## 249         Maurice Harkless   -2.243072988
+## 250                 Naz Reid   -2.263886654
+## 251               Trey Burke   -2.267856098
+## 252          Markieff Morris   -2.314717616
+## 253           Gary Trent Jr.   -2.337840363
+## 254            Kendrick Nunn   -2.367895572
+## 255           Garrett Temple   -2.442226466
+## 256             Jordan McRae   -2.559163455
+## 257           Omari Spellman   -2.602676042
+## 258 Kentavious Caldwell-Pope   -2.616741355
+## 259               Damion Lee   -2.659449617
+## 260              Alex Caruso   -2.754677123
+## 261              Tim Frazier   -2.763779875
+## 262          Marvin Williams   -2.769307138
+## 263           Andrew Wiggins   -2.823835057
+## 264             Jevon Carter   -2.842411452
+## 265               Coby White   -2.880365095
+## 266               J.J. Barea   -2.934013817
+## 267       Chandler Hutchison   -2.969326347
+## 268              Robin Lopez   -2.992639132
+## 269             Yogi Ferrell   -3.008521051
+## 270            Kevin Huerter   -3.053931912
+## 271              Bryn Forbes   -3.055623255
+## 272            E&#39;Twaun Moore   -3.101354091
+## 273             Mike Muscala   -3.141445762
+## 274               Elie Okobo   -3.218992340
+## 275            Miles Bridges   -3.233263051
+## 276             Trevor Ariza   -3.294761065
+## 277               Jeff Green   -3.344494596
+## 278        Langston Galloway   -3.364311619
+## 279           Shabazz Napier   -3.372471585
+## 280             Solomon Hill   -3.381070782
+## 281            Javonte Green   -3.427321392
+## 282                T.J. Leaf   -3.600764234
+## 283            Rui Hachimura   -3.614250323
+## 284           JaMychal Green   -3.639035739
+## 285           Furkan Korkmaz   -3.751547683
+## 286          Markieff Morris   -3.778156185
+## 287            Chris Chiozza   -3.785139266
+## 288           JaKarr Sampson   -3.816757898
+## 289              Kyle Korver   -3.910041427
+## 290               Khem Birch   -3.938030769
+## 291              Josh Okogie   -3.942411754
+## 292           Tyson Chandler   -3.982004179
+## 293               Tony Snell   -4.007681515
+## 294            Mario Hezonja   -4.010135890
+## 295              Cory Joseph   -4.146452899
+## 296          Carmelo Anthony   -4.151392823
+## 297           Derrick Walton   -4.211845713
+## 298              Ian Mahinmi   -4.301727904
+## 299              Matt Thomas   -4.316862540
+## 300         Keita Bates-Diop   -4.350577142
+## 301            Frank Jackson   -4.367382533
+## 302  Timothé Luwawu-Cabarrot   -4.393060427
+## 303           Markelle Fultz   -4.483436816
+## 304              Tyler Herro   -4.487939531
+## 305         Denzel Valentine   -4.566370479
+## 306              Jeremy Lamb   -4.582442356
+## 307            Eric Paschall   -4.586468620
+## 308               Kyle Kuzma   -4.620176899
+## 309              Eric Gordon   -4.631758741
+## 310           Reggie Jackson   -4.657196832
+## 311            Malik Beasley   -4.786101264
+## 312              Isaac Bonga   -4.848436988
+## 313          Frank Ntilikina   -4.918441616
+## 314               Malik Monk   -4.948526049
+## 315            Marko Guduric   -4.981536469
+## 316         Keita Bates-Diop   -5.003835822
+## 317             Torrey Craig   -5.017257278
+## 318            Grayson Allen   -5.019657680
+## 319              James Ennis   -5.095774299
+## 320          DeAndre&#39; Bembry   -5.126270657
+## 321               Thon Maker   -5.127834252
+## 322          Wesley Matthews   -5.156746061
+## 323               Mike Scott   -5.159557100
+## 324           Rodions Kurucs   -5.212850444
+## 325              Jordan Bell   -5.270148443
+## 326            Austin Rivers   -5.336850635
+## 327                Kris Dunn   -5.467425173
+## 328              James Ennis   -5.469610130
+## 329                Raul Neto   -5.480226861
+## 330              Jordan Bell   -5.491487387
+## 331             Solomon Hill   -5.498054778
+## 332              D.J. Wilson   -5.536381399
+## 333             Terance Mann   -5.536496306
+## 334            Kent Bazemore   -5.572685742
+## 335              Gary Harris   -5.578709996
+## 336    Sviatoslav Mykhailiuk   -5.808354321
+## 337              Luke Kornet   -5.815575407
+## 338            Dillon Brooks   -5.848965262
+## 339            Darius Bazley   -5.920771360
+## 340         Kevin Porter Jr.   -5.925860503
+## 341            Bruno Caboclo   -5.927886341
+## 342         Kenrich Williams   -5.984234975
+## 343            Landry Shamet   -6.029945601
+## 344           Wenyen Gabriel   -6.077694861
+## 345           Grant Williams   -6.126873737
+## 346             Semi Ojeleye   -6.162006769
+## 347           Romeo Langford   -6.166873021
+## 348           Damyean Dotson   -6.483532549
+## 349                PJ Dozier   -6.501537069
+## 350               Gary Clark   -6.506390870
+## 351              Cody Martin   -6.538724665
+## 352            Chris Clemons   -6.567546829
+## 353           Malcolm Miller   -6.641180895
+## 354             Goga Bitadze   -6.654591880
+## 355            Avery Bradley   -6.689582581
+## 356               RJ Barrett   -6.734980073
+## 357         Ryan Arcidiacono   -6.950604667
+## 358           Justin Jackson   -7.008487083
+## 359            Isaiah Thomas   -7.029192754
+## 360           Bruno Fernando   -7.068268427
+## 361           Sterling Brown   -7.083289156
+## 362                Ky Bowman   -7.227604702
+## 363          Thabo Sefolosha   -7.264628493
+## 364            Kent Bazemore   -7.335562198
+## 365           Darius Garland   -7.388787448
+## 366         Alfonzo McKinnie   -7.388958234
+## 367           Reggie Bullock   -7.469161607
+## 368                 Ed Davis   -7.523868222
+## 369           Gary Payton II   -7.571044254
+## 370           Jarrett Culver   -7.580860055
+## 371            Malik Beasley   -7.587391422
+## 372          Wilson Chandler   -7.653554321
+## 373            Edmond Sumner   -7.659461435
+## 374           Dewayne Dedmon   -7.686532065
+## 375              Cam Reddish   -7.734423718
+## 376            Wesley Iwundu   -7.860195699
+## 377            Tyler Johnson   -7.874025863
+## 378                Ty Jerome   -7.950194711
+## 379           Caleb Swanigan   -8.152142467
+## 380          Marco Belinelli   -8.198188872
+## 381             Kelan Martin   -8.260738512
+## 382            Lonnie Walker   -8.393931795
+## 383           Hamidou Diallo   -8.432721055
+## 384          De&#39;Andre Hunter   -8.637115075
+## 385           Treveon Graham   -8.890237208
+## 386         Anžejs Pasečņiks   -8.899023586
+## 387               Jeff Green   -8.943633304
+## 388         Juan Hernangómez   -9.034651541
+## 389 Nickeil Alexander-Walker   -9.107491122
+## 390            Luguentz Dort   -9.122757387
+## 391         Anthony Tolliver   -9.269152975
+## 392              Džanan Musa   -9.347292761
+## 393           Dewayne Dedmon   -9.433604567
+## 394               Kevin Knox   -9.445065340
+## 395          Rodney McGruder   -9.764702066
+## 396      Matthew Dellavedova   -9.888004894
+## 397             Troy Daniels   -9.915155401
+## 398               Quinn Cook   -9.920123581
+## 399         Anthony Tolliver   -9.957163072
+## 400           Taurean Prince  -10.046216966
+## 401          Jerome Robinson  -10.059453420
+## 402             Allen Crabbe  -10.469631819
+## 403          Anfernee Simons  -10.483750397
+## 404         Dennis Smith Jr.  -10.495624289
+## 405              Theo Pinson  -10.625048800
+## 406             Troy Daniels  -10.682730462
+## 407             Vince Carter  -10.824793253
+## 408         Juan Hernangómez  -11.013433938
+## 409           Carsen Edwards  -11.439903629
+## 410             Jordan Poole  -11.558005064
+## 411           Treveon Graham  -11.941270184
+## 412             Allen Crabbe  -12.464338771
+## 413        Admiral Schofield  -12.608865921
+## 414          Sekou Doumbouya  -12.871656542
+## 415          Jerome Robinson  -13.040940637
+## 416             Dwayne Bacon  -13.083978951
+## 417        Terrance Ferguson  -13.135502428
+## 418              Jacob Evans  -13.540956417
+## 419              Jacob Evans  -13.828127851
+## 420            Deonte Burton  -15.274146710</code></pre>
+<p>And there it is, my calculated best player in the NBA in the 2019-2020 season was Giannis Antetokounmpo. He DID win MVP after all. Another interesting thing to look at, my top 4 players all appeared on the All-NBA First team, and my 5th appeared on the 3rd team. The member of the 1st team that fell down out of the top 5 was LeBron James himself, which does make sense, as Superstar Value doesn’t factor leadership in.</p>
+<p>Putting everything together, we have just created a new metric to measure a players talent level, and it confirmed what we were already assuming: that the Greek Freak was the best player in the NBA during the 2019-2020 season.</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/post/2021/04/01/the-search-for-the-greatest-qb-season-ever/">The Search For the Greatest QB Season Ever</a></span>
+  <span class="nav-next"></span>
+</nav>
+
+
+
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script async src="//yihui.org/js/center-img.js"></script>
+
+  
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/tex.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+  
+  </footer>
+  </article>
+  
+  </body>
+</html>
+
