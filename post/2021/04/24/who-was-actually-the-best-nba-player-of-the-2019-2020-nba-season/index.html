@@ -90,10 +90,10 @@
 
 
 
-<p>The 2019-2020 NBA season was a unique one, with the whole season being put on hold, and then resuming months later in the bubble. This didn’t mean it was any less interesting. The league was flush with stars, both legends like LeBron James, and the emergance of a new generation of superstars, like Luka Dončić.</p>
+<p>The 2019-2020 NBA season was a unique one, with the whole season being put on hold, and then resuming months later in the bubble. This didn’t mean it was any less interesting. The league was flush with stars, both legends like LeBron James, and the emergence of a new generation of superstars, like Luka Dončić.</p>
 <p>Giannis Antetokoumnpo, the Greek Freak was crowned as the league’s Most Valuable Player, but was he REALLY the top player in the league last season? I took it upon myself to find out, and found myself creating my own measure: Superstar Value.</p>
 <p>After attaching all the packages I would need in order to have R help me determine the top players in the NBA, I uploaded my data. I’m using season stats from <a href="https://www.basketball-reference.com/">Basketball Reference</a></p>
-<p>I’m starting this investigation by looking at the advanced metrics from the seaso, so I needed to load those up.</p>
+<p>I’m starting this investigation by looking at the advanced metrics from the season, so I needed to load those up.</p>
 <pre class="r"><code>rawadvanced &lt;- read_csv(&quot;nbaadvancedplayers1920.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -103,11 +103,11 @@
 ##   Tm = col_character()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<p>I needed to trim down the data by eliminating those tht hadn’t played significant time, I set this gate at 25 games.</p>
+<p>I needed to trim down the data by eliminating those that hadn’t played significant time, I set this gate at 25 games.</p>
 <pre class="r"><code>advanced &lt;- rawadvanced %&gt;% filter(G&gt;25)</code></pre>
 <p>I first want to look at overall player value, so I am going to look at the data in terms of Value Over Replacement Player (VORP) and Box Plus/Minus (BPM)</p>
 <pre class="r"><code>mostvalue &lt;- advanced %&gt;% filter(VORP &gt; 5, BPM &gt; 4.3)</code></pre>
-<p>Putting this data into a bubble chart, you see a pocket of players who have signifcantly seperated themselves from the pack. These are our MVP candidates, and our superstars.</p>
+<p>Putting this data into a bubble chart, you see a pocket of players who have significantly separated themselves from the pack. These are our MVP candidates, and our superstars.</p>
 <pre class="r"><code>ggplot() + 
   geom_point(
     data=advanced, 
@@ -161,7 +161,7 @@
 ## 10 Rudy Gobert                  8.04
 ## # … with 410 more rows</code></pre>
 <p>Here we can see our leaders in Value Score, with James Harden taking the #1 spot, a place above the league’s “Most Valuable”.</p>
-<p>Now to move on to the next compenent, efficiency.</p>
+<p>Now to move on to the next component, efficiency.</p>
 <pre class="r"><code>goodPT &lt;- advanced %&gt;% filter(G&gt;25)</code></pre>
 <p>I once again filtered to have only players who played a lot.</p>
 <p>I used Player Efficiency Rating and True Shooting Percentage to make a scatterplot, to get an overall look at how the league looks in terms of efficiency.</p>
@@ -181,7 +181,7 @@
 The green dots represent Giannis, Anthony Davis, Luka, LeBron, Kawhi, and Damian Lillard. These players added the most positive impact to their team on a per minute basis.
 The Blue dots are an interesting thing to look at, the players with the highest True Shooting must be some of the premier players in the league, yes?</p>
 <p>well… not exactly. The blue dots represent Tyson Chandler, Damian Jones, Nerlans Noel, Mitchell Robinson, and Robert Williams. Solid role players, but not stars. True shooting seems to skew heavily towards big men, who take most of their shots close to the basket, and especially those big men who don’t shoot a lot of free throws.</p>
-<p>Now to make our Efficiency Value, using True Shooting, PER, REB% and AST%. Rebound and Assist percentage are the percetnage of rebounds or assists available to a player, that they execute on. For example, if a player has 5 rebounds come into their proximity during a game, and they grab 2 of them, they have a REB% of 40% (in real game situations these percentages are much lower.)</p>
+<p>Now to make our Efficiency Value, using True Shooting, PER, REB% and AST%. Rebound and Assist percentage are the percentage of rebounds or assists available to a player, that they execute on. For example, if a player has 5 rebounds come into their proximity during a game, and they grab 2 of them, they have a REB% of 40% (in real game situations these percentages are much lower.)</p>
 <pre class="r"><code>efficiencyScore &lt;- goodPT %&gt;%
   mutate(
     TSzscore = as.numeric(scale(`TS%`, center = TRUE, scale = TRUE)),
@@ -210,7 +210,7 @@ The Blue dots are an interesting thing to look at, the players with the highest 
 ##  9 Damian Lillard                    6.15
 ## 10 Joel Embiid                       5.94
 ## # … with 410 more rows</code></pre>
-<p>When looking at the players who led in our Efficiency Rating, the MVP takes the top spot, by a considerable margian. This makes a lot of sense based off of the play style that Antetokounmpo plays. A surprising addition to the top ten in efficiency was Robert Williams, a center with the Boston Celtics. This too, is explained by play style, he spends most of his time offensively under the basket, and has an elite dunk rate.</p>
+<p>When looking at the players who led in our Efficiency Rating, the MVP takes the top spot, by a considerable margin. This makes a lot of sense based off of the play style that Antetokounmpo plays. A surprising addition to the top ten in efficiency was Robert Williams, a center with the Boston Celtics. This too, is explained by play style, he spends most of his time offensively under the basket, and has an elite dunk rate.</p>
 <p>We have on more aspect to calculate before moving on to Superstar Value.This is to examine the players actual stats, the impact that is measured in the box score. For this, I’m going to use per game data, also from Basketball Reference.</p>
 <pre class="r"><code>perG &lt;- read_csv(&quot;pergamestatsnba.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
@@ -222,8 +222,8 @@ The Blue dots are an interesting thing to look at, the players with the highest 
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre class="r"><code>realperG &lt;- perG %&gt;% filter(G&gt;25)</code></pre>
-<p>I have once again trimmed down the players to those that had playered in more than 25 games.</p>
-<p>To get the most basic sense of who leads these stats, I looked at the top 5 players in the three biggest stat catagories, Points, Rebounds, and Assists.</p>
+<p>I have once again trimmed down the players to those that had played in more than 25 games.</p>
+<p>To get the most basic sense of who leads these stats, I looked at the top 5 players in the three biggest stat categories, Points, Rebounds, and Assists.</p>
 <pre class="r"><code>topPTs &lt;- realperG %&gt;% top_n(5, wt=PTS)</code></pre>
 <pre class="r"><code>topREBs &lt;- realperG %&gt;% top_n(5, wt=TRB)</code></pre>
 <pre class="r"><code>topASTs &lt;- realperG %&gt;% top_n(5, wt=AST)</code></pre>
