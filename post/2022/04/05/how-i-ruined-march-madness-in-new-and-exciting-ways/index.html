@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>How I Ruined March Madness in New and Exciting Ways - Sam Metcalfe&#39;s Analytics Blog</title>
+    <meta property="og:title" content="How I Ruined March Madness in New and Exciting Ways - Sam Metcalfe&#39;s Analytics Blog">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="This March, in addition to my usual dumpster fire of a bracket, a new challenger entered the mix. I created a machine learning algorithm to predict each NCAA Tournament game, and used it to fill out a &amp;hellip;">
+      <meta property="og:description" content="This March, in addition to my usual dumpster fire of a bracket, a new challenger entered the mix. I created a machine learning algorithm to predict each NCAA Tournament game, and used it to fill out a &amp;hellip;">
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+
+  </head>
+
+  
+  <body class="post">
+    <header class="masthead">
+      <h1><a href="/">Sam Metcalfe&#39;s Analytics Blog</a></h1>
+
+<p class="tagline">A blog where I will store my projects and papers to build a living portfolio.</p>
+
+      <nav class="menu">
+  <input id="menu-check" type="checkbox" hidden/>
+  <label id="menu-label" for="menu-check" class="unselectable" hidden>
+    <span class="icon close-icon">✕</span>
+    <span class="icon open-icon">☰</span>
+    <span class="text">Menu</span>
+  </label>
+  <ul>
+  
+  
+  <li><a href="http://metcalfesports.github.io/">Home</a></li>
+  
+  <li><a href="/about/">About</a></li>
+  
+  <li><a href="/projects/">Projects</a></li>
+  
+  <li><a href="/contact/">Contact Me</a></li>
+  
+  
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>How I Ruined March Madness in New and Exciting Ways</h1>
+
+<h3>R package build
+  /  2022-04-05</h3>
+<hr>
+
+
+      </header>
+
+
+
+
+
+
+<p>This March, in addition to my usual dumpster fire of a bracket, a new challenger entered the mix. I created a machine learning algorithm to predict each NCAA Tournament game, and used it to fill out a second bracket.</p>
+<p>Now between my uncanny intuition and knowledge of the CBB landscape, and a machine built to pick winners from a massive block of numbers, I felt confident that one, if not both of these brackets would be a winner.</p>
+<p>Let’s talk about my thinking before we get into the process of the machine.</p>
+<p>There are certain things I believe win games. Points win games, so team offensive efficiency is a must. Also, stopping the opponent from scoring points win games, so I’ll also include team defensive efficiency. to maximize points, and minimize opponent’s points, you MUST create extra opportunity for your time, and eliminate opportunities for your opponents. First we will do this with rebounding, offensive rebounds steal an extra possession from the opponent, and defensive rebounds ensure that the other team does not create second chance points. So i included offensive and defensive rebound metrics. Another factor I’ve seen cause good teams to fall to far inferior opponents is turnovers. I will factor in both turnover percentage (how often the “team” turns it over), and opponent turnover percentage, which I engineered to show how many turnovers a team forces its opponent to make over 100 possessions (from Basketball-Reference, my first true love). Lastly,m what often separates the good from the great? getting to the charity stripe. Not only does this allow a team to increase their score without time coming off of the clock, but it also creates foul trouble for the teams opponent. Rather than using free throw factor, I simply used free throw rate. This is because Dean Oliver’s free throw factor would factor a team that shoots 11/14 free throws the same as a team that shoots 11/26 (assuming the same amount of field goal attempts). While much uglier, the 11/26 actually presents an advantage for a team, because while still scoring the same amount of the free throws, they reached the line, and hence were fouled more often. Using these I achieved a pretty good percetnage on R, and an even better one testing it with last weekends ballgames.</p>
+<p>Now I made about 4 versions of this machine before the final product, but this is what I decided would choose my destiny for me</p>
+<p>After a moderately heavy amount of feature engineering, all my stats were how I wanted them, I truly believed I cracked the code. This is the recipe to predict ANY college basketball game. (It wasn’t)</p>
+<pre class="r"><code>cumulative_recipe &lt;- 
+  recipe(TeamResult ~ ., data = cumulative_train) %&gt;% 
+  update_role(game_id, game_date, team_short_display_name, opponent_short_display_name, season, new_role = &quot;ID&quot;) %&gt;%
+  step_normalize(all_predictors())
+
+summary(cumulative_recipe)</code></pre>
+<pre><code>## # A tibble: 18 × 4
+##    variable                             type    role      source  
+##    &lt;chr&gt;                                &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+##  1 game_id                              numeric ID        original
+##  2 game_date                            date    ID        original
+##  3 team_short_display_name              nominal ID        original
+##  4 opponent_short_display_name          nominal ID        original
+##  5 season                               numeric ID        original
+##  6 team_cumulative_o_eff                numeric predictor original
+##  7 opponent_cumulative_o_eff            numeric predictor original
+##  8 team_rolling_turnover_percentage     numeric predictor original
+##  9 opponent_rolling_turnover_percentage numeric predictor original
+## 10 team_rolling_drb                     numeric predictor original
+## 11 opponent_rolling_drb                 numeric predictor original
+## 12 team_cumulative_d_eff                numeric predictor original
+## 13 opponent_cumulative_d_eff            numeric predictor original
+## 14 team_rolling_orb                     numeric predictor original
+## 15 opponent_rolling_orb                 numeric predictor original
+## 16 team_ft_rate                         numeric predictor original
+## 17 opponent_ft_rate                     numeric predictor original
+## 18 TeamResult                           nominal outcome   original</code></pre>
+<p>Time to apply my fit to the training data, allowing the machine to do it’s best to fit a line to 80% of the roughly 55,000 games. They key difference between training and testing is that the model is allowed to look at the data to adjust and find its best fit. my overall feeling about the accuracy of my model? “Yeah, okay, this could work”</p>
+<pre class="r"><code>svm_cumulative_fit &lt;- 
+  svm_cumulative_workflow %&gt;% 
+  fit(data = cumulative_train)</code></pre>
+<pre><code>##  Setting default kernel parameters</code></pre>
+<pre class="r"><code>svmcumulativetrainresults &lt;- cumulative_train %&gt;%
+  bind_cols(predict(svm_cumulative_fit, cumulative_train))
+
+metrics(svmcumulativetrainresults, truth = TeamResult, estimate = .pred_class)</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.729
+## 2 kap      binary         0.459</code></pre>
+<p>Testing uses the other 20% of the data and blindly applies the fit it found in the training data to see how it matches up. Still pretty okay. Feeling good. Using my model to predict games in the week leading up to the tournement? It performed even better than this percentage.</p>
+<pre class="r"><code>svmcumulativetestresults &lt;- cumulative_test %&gt;%
+  bind_cols(predict(svm_cumulative_fit, cumulative_test))
+
+metrics(svmcumulativetestresults, truth = TeamResult, estimate = .pred_class)</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.721
+## 2 kap      binary         0.442</code></pre>
+<p>I should’ve acticipated that meaning that water would find its level, and find it fast.</p>
+<p>The model made its predictions on the firsst four, what do these ultimately end up meaning? Not a lot, minus the Notre Dame prediction, but we’ll get to that.</p>
+<pre class="r"><code>first &lt;- svm_cumulative_fit %&gt;% predict(new_data = first4) %&gt;%
+  bind_cols(first4) %&gt;% select(.pred_class, team_short_display_name, opponent_short_display_name, everything())
+
+first</code></pre>
+<pre><code>## # A tibble: 4 × 18
+##   .pred_class team_short_display_name opponent_short_displ… opponent_cumulative…
+##   &lt;fct&gt;       &lt;chr&gt;                   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 L           Indiana                 Wyoming                              108. 
+## 2 W           Notre Dame              Rutgers                              103. 
+## 3 W           Texas A&amp;M-CC            Texas Southern                        98.1
+## 4 W           Bryant                  Wright State                         108. 
+## # … with 14 more variables: opponent_rolling_turnover_percentage &lt;dbl&gt;,
+## #   opponent_rolling_drb &lt;dbl&gt;, opponent_cumulative_d_eff &lt;dbl&gt;,
+## #   opponent_rolling_orb &lt;dbl&gt;, opponent_ft_rate &lt;dbl&gt;, game_id &lt;int&gt;,
+## #   game_date &lt;date&gt;, season &lt;int&gt;, team_cumulative_o_eff &lt;dbl&gt;,
+## #   team_rolling_turnover_percentage &lt;dbl&gt;, team_rolling_drb &lt;dbl&gt;,
+## #   team_cumulative_d_eff &lt;dbl&gt;, team_rolling_orb &lt;dbl&gt;, team_ft_rate &lt;dbl&gt;</code></pre>
+<pre><code>## Joining, by = &quot;team_short_display_name&quot;</code></pre>
+<pre><code>## Joining, by = &quot;opponent_short_display_name&quot;</code></pre>
+<pre><code>## # A tibble: 8 × 18
+##   .pred_class team_short_display_name opponent_short_displ… opponent_cumulative…
+##   &lt;fct&gt;       &lt;chr&gt;                   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 W           Kansas                  Iowa                                  117.
+## 2 L           Purdue                  Kentucky                              114.
+## 3 W           Tennessee               Loyola Chicago                        109.
+## 4 W           Montana                 Davidson                              114.
+## 5 W           LSU                     Auburn                                108.
+## 6 W           Baylor                  UCLA                                  112.
+## 7 W           Arizona                 Houston                               114.
+## 8 W           Gonzaga                 Arkansas                              105.
+## # … with 14 more variables: opponent_rolling_turnover_percentage &lt;dbl&gt;,
+## #   opponent_rolling_drb &lt;dbl&gt;, opponent_cumulative_d_eff &lt;dbl&gt;,
+## #   opponent_rolling_orb &lt;dbl&gt;, opponent_ft_rate &lt;dbl&gt;, game_id &lt;int&gt;,
+## #   game_date &lt;date&gt;, season &lt;int&gt;, team_cumulative_o_eff &lt;dbl&gt;,
+## #   team_rolling_turnover_percentage &lt;dbl&gt;, team_rolling_drb &lt;dbl&gt;,
+## #   team_cumulative_d_eff &lt;dbl&gt;, team_rolling_orb &lt;dbl&gt;, team_ft_rate &lt;dbl&gt;</code></pre>
+<p>Here is everything you need to know about how my model performed through the Sweet 16:</p>
+<p>Poorly.</p>
+<p>It predicted Notre Dame to steal a game and a few other nice upsets, but also predicted teams like Iowa and LSU to make solid runs. These teams did not. The model scored mediocrely thus far, and realy didn’t have many teams left in the Elite 8 to earn more points.</p>
+<pre><code>## Joining, by = &quot;team_short_display_name&quot;</code></pre>
+<pre><code>## Joining, by = &quot;opponent_short_display_name&quot;</code></pre>
+<pre><code>## # A tibble: 4 × 18
+##   .pred_class team_short_display_name opponent_short_displ… opponent_cumulative…
+##   &lt;fct&gt;       &lt;chr&gt;                   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 L           UCLA                    Kentucky                              114.
+## 2 W           Gonzaga                 Davidson                              114.
+## 3 W           Arizona                 Tennessee                             107.
+## 4 W           Kansas                  Auburn                                108.
+## # … with 14 more variables: opponent_rolling_turnover_percentage &lt;dbl&gt;,
+## #   opponent_rolling_drb &lt;dbl&gt;, opponent_cumulative_d_eff &lt;dbl&gt;,
+## #   opponent_rolling_orb &lt;dbl&gt;, opponent_ft_rate &lt;dbl&gt;, game_id &lt;int&gt;,
+## #   game_date &lt;date&gt;, season &lt;int&gt;, team_cumulative_o_eff &lt;dbl&gt;,
+## #   team_rolling_turnover_percentage &lt;dbl&gt;, team_rolling_drb &lt;dbl&gt;,
+## #   team_cumulative_d_eff &lt;dbl&gt;, team_rolling_orb &lt;dbl&gt;, team_ft_rate &lt;dbl&gt;</code></pre>
+<p>The Elite 8 has been predicted, my final four teams are set. Gonzaga, Arizona, Kansas, UCLA. Before the tournament began, I really liked this set of four teams. I stopped liking them as much around midway through the second weekend. Kansas remains in, and we all know how this ends, so all hope is not lost.</p>
+<pre class="r"><code>final4 &lt;- tibble(
+  team_short_display_name=&quot;Gonzaga&quot;,
+  opponent_short_display_name=&quot;UCLA&quot;
+  ) %&gt;% add_row(
+  team_short_display_name=&quot;Arizona&quot;,
+  opponent_short_display_name=&quot;Kansas&quot;
+  ) </code></pre>
+<p>Well, now all hope is lost, the algorithm picked the top two overall seeds to play for the title, which I guess is a merit to its ability to pick good teams in a chaos-free safe space. But no one is safe in March Madness, making this a tremendous failure.</p>
+<pre class="r"><code>champ &lt;- tibble(
+  team_short_display_name=&quot;Gonzaga&quot;,
+  opponent_short_display_name=&quot;Arizona&quot;
+  )</code></pre>
+<pre><code>## Joining, by = &quot;team_short_display_name&quot;</code></pre>
+<pre><code>## Joining, by = &quot;opponent_short_display_name&quot;</code></pre>
+<pre><code>## # A tibble: 1 × 18
+##   .pred_class team_short_display_name opponent_short_displ… opponent_cumulative…
+##   &lt;fct&gt;       &lt;chr&gt;                   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 W           Gonzaga                 Arizona                               115.
+## # … with 14 more variables: opponent_rolling_turnover_percentage &lt;dbl&gt;,
+## #   opponent_rolling_drb &lt;dbl&gt;, opponent_cumulative_d_eff &lt;dbl&gt;,
+## #   opponent_rolling_orb &lt;dbl&gt;, opponent_ft_rate &lt;dbl&gt;, game_id &lt;int&gt;,
+## #   game_date &lt;date&gt;, season &lt;int&gt;, team_cumulative_o_eff &lt;dbl&gt;,
+## #   team_rolling_turnover_percentage &lt;dbl&gt;, team_rolling_drb &lt;dbl&gt;,
+## #   team_cumulative_d_eff &lt;dbl&gt;, team_rolling_orb &lt;dbl&gt;, team_ft_rate &lt;dbl&gt;</code></pre>
+<p>Arizona was my predicted champion. Congratulations to them on this minuscule moral victory. In reality my model spat out one of the worst performing brackets I’ve made in my entire life. I say “one of” because my personal bracket this year scored… the exact same. While I’m not sure what to make of that, a combination of the two methods would have made a pretty solid bracket.</p>
+<p>I think the main ways my model fell short were in not considering tempo or shooting. The teams I saw dominate their opponents did it by dictating the pace of the game, Saint Peter’s did this, and we saw how THEY did. I also failed to factor in how well a team shoots the long ball, as three-point-shooting is vital to a teams success in today’s world. A lot of teams shot VERY poorly this tournament, whether they just missed or if it had to do with the really very orange basketball.</p>
+<p>Overall, I finished in the 12th percentile for all ESPN brackets. Ouch.</p>
+<p>I’ll try again next year, but this year I decisively did NOT crack the code.</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/">Who was ACTUALLY the best NBA player of the 2019-2020 NBA Season?</a></span>
+  <span class="nav-next"></span>
+</nav>
+
+
+
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script async src="//yihui.org/js/center-img.js"></script>
+
+  
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/tex.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+  
+  </footer>
+  </article>
+  
+  </body>
+</html>
+

@@ -6,7 +6,17 @@
     <description>Recent content in Home on Sam Metcalfe&#39;s Analytics Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 24 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://metcalfesports.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 05 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://metcalfesports.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How I Ruined March Madness in New and Exciting Ways</title>
+      <link>http://metcalfesports.github.io/post/2022/04/05/how-i-ruined-march-madness-in-new-and-exciting-ways/</link>
+      <pubDate>Tue, 05 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://metcalfesports.github.io/post/2022/04/05/how-i-ruined-march-madness-in-new-and-exciting-ways/</guid>
+      <description>This March, in addition to my usual dumpster fire of a bracket, a new challenger entered the mix. I created a machine learning algorithm to predict each NCAA Tournament game, and used it to fill out a second bracket.
+Now between my uncanny intuition and knowledge of the CBB landscape, and a machine built to pick winners from a massive block of numbers, I felt confident that one, if not both of these brackets would be a winner.</description>
+    </item>
+    
     <item>
       <title>Who was ACTUALLY the best NBA player of the 2019-2020 NBA Season?</title>
       <link>http://metcalfesports.github.io/post/2021/04/24/who-was-actually-the-best-nba-player-of-the-2019-2020-nba-season/</link>
