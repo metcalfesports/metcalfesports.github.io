@@ -6,7 +6,17 @@
     <description>Recent content in Home on Sam Metcalfe&#39;s Analytics Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://metcalfesports.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 01 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://metcalfesports.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gambling for Two Weeks, a cautionary tale.</title>
+      <link>http://metcalfesports.github.io/post/2022/05/01/gambling-for-two-weeks-a-cautionary-tale/</link>
+      <pubDate>Sun, 01 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://metcalfesports.github.io/post/2022/05/01/gambling-for-two-weeks-a-cautionary-tale/</guid>
+      <description>After ruining March Madness through machine learning (see previous post), I suppose we decided there wasn’t enough negative implications of doing poorly in that challenge. With this in mind, we set out to make millions gambling on NBA basketball. Or at least to try to make millions, and fall devastatingly short.
+My team assembled our model based off of the assumption that it was the NBA and no defenses wouyld be played during the duration of the project.</description>
+    </item>
+    
     <item>
       <title>How I Ruined March Madness in New and Exciting Ways</title>
       <link>http://metcalfesports.github.io/post/2022/04/05/how-i-ruined-march-madness-in-new-and-exciting-ways/</link>

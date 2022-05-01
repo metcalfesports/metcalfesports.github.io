@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Gambling for Two Weeks, a cautionary tale. - Sam Metcalfe&#39;s Analytics Blog</title>
+    <meta property="og:title" content="Gambling for Two Weeks, a cautionary tale. - Sam Metcalfe&#39;s Analytics Blog">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="After ruining March Madness through machine learning (see previous post), I suppose we decided there wasn’t enough negative implications of doing poorly in that challenge. With this in mind, we set &amp;hellip;">
+      <meta property="og:description" content="After ruining March Madness through machine learning (see previous post), I suppose we decided there wasn’t enough negative implications of doing poorly in that challenge. With this in mind, we set &amp;hellip;">
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+
+  </head>
+
+  
+  <body class="post">
+    <header class="masthead">
+      <h1><a href="/">Sam Metcalfe&#39;s Analytics Blog</a></h1>
+
+<p class="tagline">A blog where I will store my projects and papers to build a living portfolio.</p>
+
+      <nav class="menu">
+  <input id="menu-check" type="checkbox" hidden/>
+  <label id="menu-label" for="menu-check" class="unselectable" hidden>
+    <span class="icon close-icon">✕</span>
+    <span class="icon open-icon">☰</span>
+    <span class="text">Menu</span>
+  </label>
+  <ul>
+  
+  
+  <li><a href="http://metcalfesports.github.io/">Home</a></li>
+  
+  <li><a href="/about/">About</a></li>
+  
+  <li><a href="/projects/">Projects</a></li>
+  
+  <li><a href="/contact/">Contact Me</a></li>
+  
+  
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>Gambling for Two Weeks, a cautionary tale.</h1>
+
+<h3>R package build
+  /  2022-05-01</h3>
+<hr>
+
+
+      </header>
+
+
+
+
+
+
+<p>After ruining March Madness through machine learning (see previous post), I suppose we decided there wasn’t enough negative implications of doing poorly in that challenge. With this in mind, we set out to make millions gambling on NBA basketball.
+Or at least to try to make millions, and fall devastatingly short.</p>
+<p>My team assembled our model based off of the assumption that it was the NBA and no defenses wouyld be played during the duration of the project. This may not be a hot take, but we built our model around teams abilities to outscore their opponents, using things like point differential and net ratings, which are dictated by HOW MUCH teams outscore their opponents. We DID use blocks and steals together, making bleals, because these are extra possessions that have been stolen. Offensive rebounds also fit in this category of extra possessions, so that is a potential addition. We plugged all of this intoa Support Vector machine to predict our games.</p>
+<p>We are giving our model some weight, but especially during this last week of the season while teams are resting their best players for the playoffs, we’re giving our guts a tad more say. Our research almost entirely consists of figuring out who is in or oout for every game, as that makes the biggest difference currently. Also balancing the reward and risk for each bet is key, hence not betting on -2000 favorites or anything.</p>
+<p>How did the model fare? It immediately squandered all faith we had in it, losign a lot of money very quickly in the first few days. From that point on, the model served as a 5th group member, being overruled by the majority when we felt that it was off of its rocker.</p>
+<p>We found more success this way but were still down a hundred or two going into the final two days of the project. It was time to make our move, we weren’t here to lose money.
+We bet the house on the Phoenix Suns to win game6 and close out the pelicans. Down 10 in the 3rd with plenty of others rooting for our downfall, we never lost faith. This pick was unanimous in our group, along with the model. They came back, and we were up pretty big going into the final day.</p>
+<p>Now this is where we got played. We didn’t want to lose out winnings on the final day of the challenge, but wanted to protect out lead. We gained intel on the 2nd place teams plan for the day, they were going small. We felt confident making a tiny bet for the day, and letting our total stand for itself.</p>
+<p>We were lied to, deceived, led astray, and flat out bamboozled. They went huge, and we wound up in 3rd place.</p>
+<p>Nonetheless, we finished in the black, by a few hundred. The model was more solid than we gave it credit for, we just agreed with it most of the time. Our record was 10-9, which is not ideal, but can be extremely profitable if you use your moneylines correctly. We did not bet on any favorites that the risk/reward was too safe, and tried to hit a few long shots here and there.</p>
+<p>Our machine learning was alright, not shabby at all, but probably not worth quitting your job for. Because we felt fairly successfuly most of the project, we probably didn’t learn the lessons about gambling we would’ve if we lost thousands, but seriously, gamble responsibly (and not in the state of Nebraska)</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/post/2022/04/05/how-i-ruined-march-madness-in-new-and-exciting-ways/">How I Ruined March Madness in New and Exciting Ways</a></span>
+  <span class="nav-next"></span>
+</nav>
+
+
+
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script async src="//yihui.org/js/center-img.js"></script>
+
+  
+
+  
+  </footer>
+  </article>
+  
+  </body>
+</html>
+
